@@ -104,6 +104,21 @@ docker compose ps
 Both containers should be `Up`, bound only to `127.0.0.1` (confirm with
 `docker compose port backend 8080` → should print `127.0.0.1:8080`).
 
+**If port 8080 or 3000 is already taken** on this host by something else
+(check with `sudo ss -tlnp | grep -E '8080|3000'`) — common on shared boxes
+that already run Jenkins/other services — pick different host ports instead
+of fighting over them. Create a `.env` file at the **repo root** (next to
+`docker-compose.yml`, not `backend/.env`):
+
+```dotenv
+# .env (repo root)
+BACKEND_HOST_PORT=8081
+FRONTEND_HOST_PORT=3001
+```
+
+Then re-run the `up -d --build` command above, and use the port you chose
+instead of 8080/3000 in the nginx config in the next step.
+
 ## 5. nginx + HTTPS
 
 ```sh
