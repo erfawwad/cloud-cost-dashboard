@@ -116,8 +116,16 @@ BACKEND_HOST_PORT=8081
 FRONTEND_HOST_PORT=3001
 ```
 
-Then re-run the `up -d --build` command above, and use the port you chose
-instead of 8080/3000 in the nginx config in the next step.
+Then tear down and re-run (a plain re-`up` won't clear stale port mappings
+from a previous failed attempt):
+
+```sh
+docker compose -f docker-compose.yml -f docker-compose.prod.yml down
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+```
+
+and use the port you chose instead of 8080/3000 in the nginx config in the
+next step.
 
 ## 5. nginx + HTTPS
 

@@ -1,8 +1,15 @@
+# Host ports (and the bind address) are overridable via a root-level .env
+# file (next to this one, NOT backend/.env) without editing this file —
+# useful when 8080/3000 collide with something else already running on the
+# host:
+#   BACKEND_HOST_PORT=8081
+#   FRONTEND_HOST_PORT=3001
+#   BIND_IP=0.0.0.0   # only if you actually want LAN/internet-reachable ports; defaults to loopback-only
 services:
   backend:
     build: ./backend
     ports:
-      - "8080:8080"
+      - "${BIND_IP:-127.0.0.1}:${BACKEND_HOST_PORT:-8080}:8080"
     volumes:
       - backend_data:/app/data
     env_file:
@@ -15,7 +22,7 @@ services:
       args:
         VITE_API_URL: ${VITE_API_URL:-http://localhost:8080}
     ports:
-      - "3000:80"
+      - "${BIND_IP:-127.0.0.1}:${FRONTEND_HOST_PORT:-3000}:80"
     depends_on:
       - backend
     restart: unless-stopped

@@ -1,24 +1,16 @@
-# Production overlay: binds both services to localhost only (nginx on the
-# host is the sole public entry point over HTTPS) and builds the frontend to
-# call the API at the same origin, so nginx can route /api/* to the backend
-# and everything else to the frontend from one public domain/port.
+# Production overlay: builds the frontend to call the API at the same
+# origin (empty VITE_API_URL), so nginx can route /api/* to the backend and
+# everything else to the frontend from one public domain/port.
+#
+# Loopback-only port binding lives in docker-compose.yml itself (not here) —
+# ports are a list field, and Compose APPENDS overridden list entries rather
+# than replacing them when values differ between files, so splitting the
+# bind config across two files silently doubled up the port mappings. One
+# source of truth avoids that entirely.
 #
 # Usage: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
-#
-# Host ports are overridable (e.g. when 8080/3000 are already taken by
-# something else on a shared box) via a root-level .env file (NOT
-# backend/.env — this one is read by docker compose itself, next to this
-# file):
-#   BACKEND_HOST_PORT=8081
-#   FRONTEND_HOST_PORT=3001
 services:
-  backend:
-    ports:
-      - "127.0.0.1:${BACKEND_HOST_PORT:-8080}:8080"
-
   frontend:
     build:
       args:
         VITE_API_URL: ""
-    ports:
-      - "127.0.0.1:${FRONTEND_HOST_PORT:-3000}:80"
