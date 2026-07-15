@@ -1,5 +1,5 @@
 /data/
 *.db
 .env
-server
-server.exe
+/server
+/server.exe
