@@ -1,0 +1,17 @@
+# Production overlay: binds both services to localhost only (nginx on the
+# host is the sole public entry point over HTTPS) and builds the frontend to
+# call the API at the same origin, so nginx can route /api/* to the backend
+# and everything else to the frontend from one public domain/port.
+#
+# Usage: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+services:
+  backend:
+    ports:
+      - "127.0.0.1:8080:8080"
+
+  frontend:
+    build:
+      args:
+        VITE_API_URL: ""
+    ports:
+      - "127.0.0.1:3000:80"

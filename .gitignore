@@ -1,0 +1,14 @@
+node_modules/
+dist/
+*.log
+
+# backend
+backend/data/
+backend/*.db
+backend/.env
+backend/server
+backend/server.exe
+
+# editor
+.idea/
+.vscode/
